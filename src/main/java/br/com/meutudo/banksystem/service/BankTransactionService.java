@@ -13,5 +13,5 @@ public interface BankTransactionService {
 
     BankTransaction getBankTransactionById(long bankTransactionId);
 
-    void deleteBankTransaction(long id);
+    void deleteBankTransaction(long bankTransactionId);
 }
