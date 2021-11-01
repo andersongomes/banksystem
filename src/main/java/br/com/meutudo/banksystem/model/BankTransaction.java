@@ -28,11 +28,17 @@ public class BankTransaction {
 	@Column(name = "transaction_value")
 	private Double transactionValue;
 
+	@Column(name = "transaction_reversal_date")
+	private Date transactionReversalDate;
+
 	@OneToOne
 	private Account account;
 
 	@OneToOne
 	private User user;
+	
+	@OneToOne
+	private BankTransfer bankTransfer;
 
 	public long getId() {
 		return id;
@@ -88,5 +94,21 @@ public class BankTransaction {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Date getTransactionReversalDate() {
+		return transactionReversalDate;
+	}
+
+	public void setTransactionReversalDate(Date transactionReversalDate) {
+		this.transactionReversalDate = transactionReversalDate;
+	}
+
+	public BankTransfer getBankTransfer() {
+		return bankTransfer;
+	}
+
+	public void setBankTransfer(BankTransfer bankTransfer) {
+		this.bankTransfer = bankTransfer;
 	}
 }

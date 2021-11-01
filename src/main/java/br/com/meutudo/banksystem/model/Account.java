@@ -13,11 +13,23 @@ import javax.persistence.OneToOne;
 public class Account {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@OneToOne
 	private User user;
+
+	@OneToOne
+	private Bank bank;
+
+	@Column(name = "agency")
+	private String agency;
+
+	@Column(name = "account_number")
+	private String accountNumber;
+
+	@Column(name = "operation")
+	private String operation;
 
 	@Column(name = "creation_date")
 	private Date creation_date;
@@ -55,5 +67,37 @@ public class Account {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
+	public String getAgency() {
+		return agency;
+	}
+
+	public void setAgency(String agency) {
+		this.agency = agency;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 }

@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name = "USER")
-public class User {
+@Entity(name = "BANK")
+public class Bank {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,20 +18,8 @@ public class User {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "login")
-	private String login;
-
-	@Column(name = "password")
-	private String password;
-
-	@Column(name = "email")
-	private String email;
-
-	@Column(name = "cpf")
-	private String cpf;
-
-	@Column(name = "rg")
-	private String rg;
+	@Column(name = "bank_code")
+	private String bankCode;
 
 	@Column(name = "phone")
 	private String phone;
@@ -58,44 +46,20 @@ public class User {
 		this.name = name;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getBankCode() {
+		return bankCode;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getRg() {
-		return rg;
-	}
-
-	public void setRg(String rg) {
-		this.rg = rg;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public Date getCreationDate() {
@@ -112,13 +76,5 @@ public class User {
 
 	public void setActive(boolean active) {
 		this.active = active;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 }
