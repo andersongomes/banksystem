@@ -3,13 +3,18 @@ package br.com.meutudo.banksystem.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import br.com.meutudo.banksystem.exception.ResourceNotFoundException;
 import br.com.meutudo.banksystem.model.Bank;
 import br.com.meutudo.banksystem.repository.BankRepository;
 import br.com.meutudo.banksystem.service.BankService;
 
+@Service
+@Transactional
 public class BankServiceImpl implements BankService {
 
 	@Autowired
