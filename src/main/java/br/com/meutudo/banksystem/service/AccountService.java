@@ -7,11 +7,11 @@ import br.com.meutudo.banksystem.model.Account;
 public interface AccountService {
 	Account createAccount(Account account);
 
-    Account updateAccount(Account account);
+	Account updateAccount(Account account);
 
-    List<Account> getAccounts();
+	List<Account> getAccounts();
 
-    Account getAccountById(long accountId);
+	Account getAccountById(long accountId);
 
-    void deleteAccount(long id);
+	void deleteAccount(long accountId);
 }
