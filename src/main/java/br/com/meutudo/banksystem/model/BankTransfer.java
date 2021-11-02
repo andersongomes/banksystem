@@ -5,19 +5,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity(name = "BANK_TRANSFER")
 public class BankTransfer {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@OneToOne
+	@JoinColumn(name = "origin_account_id", referencedColumnName = "id")
 	private Account originAccount;
 
 	@OneToOne
+	@JoinColumn(name = "destiny_account_id", referencedColumnName = "id")
 	private Account destinyAccount;
 
 	@Column(name = "transfer_value")

@@ -2,12 +2,18 @@ package br.com.meutudo.banksystem.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity(name = "ACCOUNT")
 public class Account {
@@ -16,10 +22,12 @@ public class Account {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.MERGE)
+	@JoinColumn(name = "bank_id", referencedColumnName = "id")
 	private Bank bank;
 
 	@Column(name = "agency")
@@ -32,7 +40,9 @@ public class Account {
 	private String operation;
 
 	@Column(name = "creation_date")
-	private Date creation_date;
+	@CreatedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date creationDate;
 
 	@Column(name = "active")
 	private boolean active;
@@ -53,12 +63,12 @@ public class Account {
 		this.user = user;
 	}
 
-	public Date getCreation_date() {
-		return creation_date;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
-	public void setCreation_date(Date creation_date) {
-		this.creation_date = creation_date;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public boolean isActive() {
