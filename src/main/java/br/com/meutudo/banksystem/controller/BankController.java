@@ -1,5 +1,6 @@
 package br.com.meutudo.banksystem.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class BankController {
 
 	@PostMapping("/bank/create")
 	public ResponseEntity<Bank> createBank(@RequestBody Bank bank) {
+		bank.setActive(true);
+		bank.setCreationDate(new Date());
 		return ResponseEntity.ok().body(this.bankService.createBank(bank));
 	}
 

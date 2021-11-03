@@ -1,5 +1,6 @@
 package br.com.meutudo.banksystem.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class AccountController {
 
 	@PostMapping("/account/create")
 	public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+		account.setActive(true);
+		account.setCreationDate(new Date());
 		return ResponseEntity.ok().body(this.accountService.createAccount(account));
 	}
 
