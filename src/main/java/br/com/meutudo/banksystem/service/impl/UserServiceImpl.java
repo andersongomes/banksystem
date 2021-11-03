@@ -3,6 +3,9 @@ package br.com.meutudo.banksystem.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ public class UserServiceImpl implements UserService {
 	public User createUser(User user) {
 		return userRepository.save(user);
 	}
+
+	@PersistenceContext
+	private EntityManager em;
 
 	@Override
 	public User updateUser(User user) {
@@ -70,5 +76,15 @@ public class UserServiceImpl implements UserService {
 		} else {
 			throw new ResourceNotFoundException("Record not found with id : " + userId);
 		}
+	}
+
+	@Override
+	public long login(User user) {
+		Query query = em.createQuery("SELECT id FROM USER WHERE login = ?1 AND password = ?2 AND active = TRUE");
+		List<Long> ids = query.setParameter(1, user.getLogin()).setParameter(2, user.getPassword()).getResultList();
+		if (ids.size() > 0) {
+			return ids.get(0);
+		}
+		return 0L;
 	}
 }
