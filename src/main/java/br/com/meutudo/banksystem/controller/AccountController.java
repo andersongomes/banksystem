@@ -82,7 +82,7 @@ public class AccountController {
 			@RequestBody BankTransaction bankTransaction) {
 		User user = this.tokenService.validateToken(authentication);
 		if (user != null) {
-			if (bankTransactionService.accountBalance(id) > bankTransaction.getTransactionValue()) {
+			if (bankTransactionService.accountBalance(id) >= bankTransaction.getTransactionValue()) {
 				bankTransaction.setAccount(accountService.getAccountById(id));
 				bankTransaction.setUser(user);
 				bankTransaction.setTransactionFactor(-1);

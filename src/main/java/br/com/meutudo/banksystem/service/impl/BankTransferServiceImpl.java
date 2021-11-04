@@ -22,7 +22,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 
 	@Override
 	public BankTransfer createBankTransfer(BankTransfer bankTransfer) {
-		return bankTransferRepository.save(bankTransfer);
+		return this.bankTransferRepository.save(bankTransfer);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class BankTransferServiceImpl implements BankTransferService {
 			bankTransferToUpdate.setOriginAccount(bankTransfer.getOriginAccount());
 			bankTransferToUpdate.setDestinyAccount(bankTransfer.getDestinyAccount());
 			bankTransferToUpdate.setTransferValue(bankTransfer.getTransferValue());
-			bankTransferRepository.save(bankTransferToUpdate);
+			this.bankTransferRepository.save(bankTransferToUpdate);
 			return bankTransferToUpdate;
 		} else {
 			throw new ResourceNotFoundException("Record not found with id : " + bankTransfer.getId());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -28,7 +29,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 
 	@Override
 	public BankTransaction createBankTransaction(BankTransaction bankTransaction) {
-		return bankTransactionRepository.save(bankTransaction);
+		return this.bankTransactionRepository.save(bankTransaction);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 			bankTransactionToUpdate.setAccount(bankTransaction.getAccount());
 			bankTransactionToUpdate.setUser(bankTransaction.getUser());
 			bankTransactionToUpdate.setBankTransfer(bankTransaction.getBankTransfer());
-			bankTransactionRepository.save(bankTransactionToUpdate);
+			this.bankTransactionRepository.save(bankTransactionToUpdate);
 			return bankTransactionToUpdate;
 		} else {
 			throw new ResourceNotFoundException("Record not found with id : " + bankTransaction.getId());
@@ -93,4 +94,19 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		return value;
 	}
 
+	@Override
+	public List<BankTransaction> getBankTransactionByBankTransfer(long bankTransferId) {
+		Query query = em.createQuery(
+				"SELECT bt FROM BANK_TRANSACTION bt WHERE bt.bankTransfer.id = :id AND bt.transactionReversalDate IS NULL",
+				BankTransaction.class);
+		query.setParameter("id", bankTransferId);
+		try {
+			List<BankTransaction> transactions = (List<BankTransaction>) query.getResultList();
+			return transactions;
+		} catch (NoResultException e) {
+			return null;
+		} catch (Exception ee) {
+			return null;
+		}
+	}
 }

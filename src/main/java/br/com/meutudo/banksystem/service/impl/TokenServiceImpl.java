@@ -3,7 +3,6 @@ package br.com.meutudo.banksystem.service.impl;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import br.com.meutudo.banksystem.model.Token;
 import br.com.meutudo.banksystem.model.User;
 import br.com.meutudo.banksystem.repository.TokenRepository;
-import br.com.meutudo.banksystem.repository.UserRepository;
 import br.com.meutudo.banksystem.service.TokenService;
 import br.com.meutudo.banksystem.service.UserService;
 
@@ -52,18 +50,19 @@ public class TokenServiceImpl implements TokenService {
 			c.add(Calendar.DATE, 1);
 			now = c.getTime();
 			token.setExpirationDate(now);
-			return tokenRepository.save(token);
+			return this.tokenRepository.save(token);
 		}
 		return null;
 	}
 
 	@Override
 	public User validateToken(String token) {
-		Query query = em.createQuery("SELECT t FROM TOKEN t	WHERE token = :token AND expirationDate > CURRENT_TIMESTAMP()", Token.class);
+		Query query = em.createQuery(
+				"SELECT t FROM TOKEN t	WHERE token = :token AND expirationDate > CURRENT_TIMESTAMP()", Token.class);
 		query.setParameter("token", token);
 		try {
 			Token t = (Token) query.getSingleResult();
-			User user = userService.getUserById(t.getUser().getId());
+			User user = this.userService.getUserById(t.getUser().getId());
 			return user;
 		} catch (NoResultException e) {
 			return null;

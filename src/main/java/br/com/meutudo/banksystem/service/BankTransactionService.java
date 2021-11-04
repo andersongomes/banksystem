@@ -16,4 +16,6 @@ public interface BankTransactionService {
     void deleteBankTransaction(long bankTransactionId);
     
     Double accountBalance(long accountId);
+
+    List<BankTransaction> getBankTransactionByBankTransfer(long bankTransferId);
 }
