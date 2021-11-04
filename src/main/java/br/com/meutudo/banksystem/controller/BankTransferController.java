@@ -1,5 +1,8 @@
 package br.com.meutudo.banksystem.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -128,4 +131,52 @@ public class BankTransferController {
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
+
+	@PostMapping("/transfer/create/parceled/{installments}")
+	public ResponseEntity<String> createBankTransferParceled(@PathVariable int installments, @RequestBody BankTransfer bankTransfer,
+			@RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			if (installments > 0) {
+				if (this.bankTransactionService.accountBalance(bankTransfer.getOriginAccount().getId()) > bankTransfer
+						.getTransferValue()) {
+					BankTransfer bankTransferResult = this.bankTransferService.createBankTransfer(bankTransfer);
+					
+					Double valueParceled = (Double) bankTransfer.getTransferValue() / installments;
+					BigDecimal bd = new BigDecimal(valueParceled).setScale(2, RoundingMode.HALF_EVEN);
+					valueParceled = bd.doubleValue();
+					Date now = new Date();
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(now);
+
+					for (int i = 0; i < installments; i++) {
+						BankTransaction bankTransaction = new BankTransaction();
+						bankTransaction.setAccount(this.accountService.getAccountById(bankTransfer.getOriginAccount().getId()));
+						bankTransaction.setUser(user);
+						bankTransaction.setTransactionFactor(-1);
+						bankTransaction.setTransactionValue(valueParceled);
+						cal.add(Calendar.MONTH, 1);
+						bankTransaction.setTransactionSchedulingDate(cal.getTime());
+						bankTransaction.setBankTransfer(bankTransferResult);
+						this.bankTransactionService.createBankTransaction(bankTransaction);
+		
+						bankTransaction = new BankTransaction();
+						bankTransaction
+								.setAccount(this.accountService.getAccountById(bankTransfer.getDestinyAccount().getId()));
+						bankTransaction.setUser(user);
+						bankTransaction.setTransactionFactor(1);
+						bankTransaction.setTransactionValue(valueParceled);	
+						bankTransaction.setTransactionSchedulingDate(cal.getTime());
+						bankTransaction.setBankTransfer(bankTransferResult);
+						this.bankTransactionService.createBankTransaction(bankTransaction);
+					}
+					return ResponseEntity.ok().body("Parceled transfer concluded with success!");
+				}
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Insufficient balance!");
+			}
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid installments!");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
+	}
+
 }

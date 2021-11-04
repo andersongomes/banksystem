@@ -1,5 +1,7 @@
 package br.com.meutudo.banksystem.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +93,8 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 		for (BankTransaction t : transactions) {
 			value += t.getTransactionValue() * t.getTransactionFactor();
 		}
-		return value;
+		BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN);
+		return bd.doubleValue();
 	}
 
 	@Override
