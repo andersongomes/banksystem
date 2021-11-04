@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -58,9 +59,16 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public User validateToken(String token) {
-		Query query = em.createQuery("SELECT user_id FROM TOKEN WHERE token = ?1 AND expiration_date > CURRENT_TIMESTAMP()");
-		List<Long> ids = query.setParameter(1, token).getResultList();
-		User user = userService.getUserById(ids.get(0));
-		return user;
+		Query query = em.createQuery("SELECT t FROM TOKEN t	WHERE token = :token AND expirationDate > CURRENT_TIMESTAMP()", Token.class);
+		query.setParameter("token", token);
+		try {
+			Token t = (Token) query.getSingleResult();
+			User user = userService.getUserById(t.getUser().getId());
+			return user;
+		} catch (NoResultException e) {
+			return null;
+		} catch (Exception ee) {
+			return null;
+		}
 	}
 }
