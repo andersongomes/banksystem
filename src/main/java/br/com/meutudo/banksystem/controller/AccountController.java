@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.meutudo.banksystem.model.Account;
 import br.com.meutudo.banksystem.model.BankTransaction;
-import br.com.meutudo.banksystem.model.BankTransfer;
 import br.com.meutudo.banksystem.model.User;
 import br.com.meutudo.banksystem.service.AccountService;
 import br.com.meutudo.banksystem.service.BankTransactionService;
@@ -36,32 +35,53 @@ public class AccountController {
 	private BankTransactionService bankTransactionService;
 
 	@GetMapping("/account/list")
-	public ResponseEntity<List<Account>> getAccounts() {
-		return ResponseEntity.ok().body(this.accountService.getAccounts());
+	public ResponseEntity<List<Account>> getAccounts(@RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			return ResponseEntity.ok().body(this.accountService.getAccounts());
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 
 	@GetMapping("/account/{id}")
-	public ResponseEntity<Account> getAccountById(@PathVariable long id) {
-		return ResponseEntity.ok().body(this.accountService.getAccountById(id));
+	public ResponseEntity<Account> getAccountById(@PathVariable long id, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			return ResponseEntity.ok().body(this.accountService.getAccountById(id));
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 
 	@PostMapping("/account/create")
-	public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-		account.setActive(true);
-		account.setCreationDate(new Date());
-		return ResponseEntity.ok().body(this.accountService.createAccount(account));
+	public ResponseEntity<String> createAccount(@RequestBody Account account, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			account.setActive(true);
+			account.setCreationDate(new Date());
+			return ResponseEntity.ok().body("The account was created!");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
 
 	@PutMapping("/account/update/{id}")
-	public ResponseEntity<Account> updateAccount(@PathVariable long id, @RequestBody Account account) {
-		account.setId(id);
-		return ResponseEntity.ok().body(this.accountService.updateAccount(account));
+	public ResponseEntity<String> updateAccount(@PathVariable long id, @RequestBody Account account,
+			@RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			account.setId(id);
+			return ResponseEntity.ok().body("The account are updated!");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
 
 	@DeleteMapping("/account/delete/{id}")
-	public HttpStatus deleteAccount(@PathVariable long id) {
-		this.accountService.deleteAccount(id);
-		return HttpStatus.OK;
+	public ResponseEntity<String> deleteAccount(@PathVariable long id, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			this.accountService.deleteAccount(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
 
 	@PostMapping("/account/deposit/{id}")
@@ -105,9 +125,9 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
 
-
 	@GetMapping("/account/transaction/list/agended/{id}")
-	public ResponseEntity<List<BankTransaction>> getBankTransfersAgended(@PathVariable long id, @RequestHeader String authentication) {
+	public ResponseEntity<List<BankTransaction>> getBankTransfersAgended(@PathVariable long id,
+			@RequestHeader String authentication) {
 		User user = this.tokenService.validateToken(authentication);
 		if (user != null) {
 			return ResponseEntity.ok().body(bankTransactionService.getFutureBankTransactionByAccount(id));

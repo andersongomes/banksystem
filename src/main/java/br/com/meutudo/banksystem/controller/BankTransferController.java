@@ -42,13 +42,22 @@ public class BankTransferController {
 	private TokenService tokenService;
 
 	@GetMapping("/transfer/list")
-	public ResponseEntity<List<BankTransfer>> getBankTransfers() {
-		return ResponseEntity.ok().body(this.bankTransferService.getBankTransfers());
+	public ResponseEntity<List<BankTransfer>> getBankTransfers(@RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			return ResponseEntity.ok().body(this.bankTransferService.getBankTransfers());
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 
 	@GetMapping("/transfer/{id}")
-	public ResponseEntity<BankTransfer> getBankTransferById(@PathVariable long id) {
-		return ResponseEntity.ok().body(this.bankTransferService.getBankTransferById(id));
+	public ResponseEntity<BankTransfer> getBankTransferById(@PathVariable long id,
+			@RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			return ResponseEntity.ok().body(this.bankTransferService.getBankTransferById(id));
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 
 	@PostMapping("/transfer/create")
@@ -90,20 +99,28 @@ public class BankTransferController {
 
 	@PutMapping("/transfer/update/{id}")
 	public ResponseEntity<BankTransfer> updateBankTransfer(@PathVariable long id,
-			@RequestBody BankTransfer bankTransfer) {
-		bankTransfer.setId(id);
-		return ResponseEntity.ok().body(this.bankTransferService.updateBankTransfer(bankTransfer));
+			@RequestBody BankTransfer bankTransfer, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			bankTransfer.setId(id);
+			return ResponseEntity.ok().body(this.bankTransferService.updateBankTransfer(bankTransfer));
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 
 	@DeleteMapping("/transfer/delete/{id}")
-	public HttpStatus deleteBankTransfer(@PathVariable long id) {
-		this.bankTransferService.deleteBankTransfer(id);
-		return HttpStatus.OK;
+	public ResponseEntity<String> deleteBankTransfer(@PathVariable long id, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			this.bankTransferService.deleteBankTransfer(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
+
 	}
 
 	@PutMapping("/transfer/revert/{id}")
-	public ResponseEntity<String> bankTransferRevert(@PathVariable long id,
-			@RequestHeader String authentication) {
+	public ResponseEntity<String> bankTransferRevert(@PathVariable long id, @RequestHeader String authentication) {
 		User user = this.tokenService.validateToken(authentication);
 		if (user != null) {
 			BankTransfer bankTransfer = this.bankTransferService.getBankTransferById(id);
@@ -114,7 +131,8 @@ public class BankTransferController {
 				for (BankTransaction bt : bankTransactions) {
 					if (bt.getTransactionFactor() == 1) {
 						Double x = this.bankTransactionService.accountBalance(bt.getAccount().getId());
-						if (Double.compare(bt.getTransactionValue(), this.bankTransactionService.accountBalance(bt.getAccount().getId())) <= 0) {
+						if (Double.compare(bt.getTransactionValue(),
+								this.bankTransactionService.accountBalance(bt.getAccount().getId())) <= 0) {
 							bt.setTransactionReversalDate(new Date());
 							this.bankTransactionService.updateBankTransaction(bt);
 						} else {
@@ -133,15 +151,15 @@ public class BankTransferController {
 	}
 
 	@PostMapping("/transfer/create/parceled/{installments}")
-	public ResponseEntity<String> createBankTransferParceled(@PathVariable int installments, @RequestBody BankTransfer bankTransfer,
-			@RequestHeader String authentication) {
+	public ResponseEntity<String> createBankTransferParceled(@PathVariable int installments,
+			@RequestBody BankTransfer bankTransfer, @RequestHeader String authentication) {
 		User user = this.tokenService.validateToken(authentication);
 		if (user != null) {
 			if (installments > 0) {
 				if (this.bankTransactionService.accountBalance(bankTransfer.getOriginAccount().getId()) > bankTransfer
 						.getTransferValue()) {
 					BankTransfer bankTransferResult = this.bankTransferService.createBankTransfer(bankTransfer);
-					
+
 					Double valueParceled = (Double) bankTransfer.getTransferValue() / installments;
 					BigDecimal bd = new BigDecimal(valueParceled).setScale(2, RoundingMode.HALF_EVEN);
 					valueParceled = bd.doubleValue();
@@ -151,7 +169,8 @@ public class BankTransferController {
 
 					for (int i = 0; i < installments; i++) {
 						BankTransaction bankTransaction = new BankTransaction();
-						bankTransaction.setAccount(this.accountService.getAccountById(bankTransfer.getOriginAccount().getId()));
+						bankTransaction.setAccount(
+								this.accountService.getAccountById(bankTransfer.getOriginAccount().getId()));
 						bankTransaction.setUser(user);
 						bankTransaction.setTransactionFactor(-1);
 						bankTransaction.setTransactionValue(valueParceled);
@@ -159,13 +178,13 @@ public class BankTransferController {
 						bankTransaction.setTransactionSchedulingDate(cal.getTime());
 						bankTransaction.setBankTransfer(bankTransferResult);
 						this.bankTransactionService.createBankTransaction(bankTransaction);
-		
+
 						bankTransaction = new BankTransaction();
-						bankTransaction
-								.setAccount(this.accountService.getAccountById(bankTransfer.getDestinyAccount().getId()));
+						bankTransaction.setAccount(
+								this.accountService.getAccountById(bankTransfer.getDestinyAccount().getId()));
 						bankTransaction.setUser(user);
 						bankTransaction.setTransactionFactor(1);
-						bankTransaction.setTransactionValue(valueParceled);	
+						bankTransaction.setTransactionValue(valueParceled);
 						bankTransaction.setTransactionSchedulingDate(cal.getTime());
 						bankTransaction.setBankTransfer(bankTransferResult);
 						this.bankTransactionService.createBankTransaction(bankTransaction);
