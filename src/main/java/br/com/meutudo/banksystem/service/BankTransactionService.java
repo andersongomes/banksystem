@@ -18,4 +18,6 @@ public interface BankTransactionService {
     Double accountBalance(long accountId);
 
     List<BankTransaction> getBankTransactionByBankTransfer(long bankTransferId);
+
+    List<BankTransaction> getFutureBankTransactionByAccount(long accountId);
 }

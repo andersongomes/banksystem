@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.meutudo.banksystem.model.Account;
 import br.com.meutudo.banksystem.model.BankTransaction;
+import br.com.meutudo.banksystem.model.BankTransfer;
 import br.com.meutudo.banksystem.model.User;
 import br.com.meutudo.banksystem.service.AccountService;
 import br.com.meutudo.banksystem.service.BankTransactionService;
@@ -102,5 +103,15 @@ public class AccountController {
 			return ResponseEntity.ok().body(balance.toString());
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
+	}
+
+
+	@GetMapping("/account/transaction/list/agended/{id}")
+	public ResponseEntity<List<BankTransaction>> getBankTransfersAgended(@PathVariable long id, @RequestHeader String authentication) {
+		User user = this.tokenService.validateToken(authentication);
+		if (user != null) {
+			return ResponseEntity.ok().body(bankTransactionService.getFutureBankTransactionByAccount(id));
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 	}
 }

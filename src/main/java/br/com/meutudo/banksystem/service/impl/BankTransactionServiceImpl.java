@@ -112,4 +112,21 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 			return null;
 		}
 	}
+
+	@Override
+	public List<BankTransaction> getFutureBankTransactionByAccount(long accountId) {
+		Query query = em.createQuery(
+				"SELECT bt FROM BANK_TRANSACTION bt WHERE bt.account.id = :accountId AND bt.transactionReversalDate IS NULL AND bt.transactionDate IS NULL",
+				BankTransaction.class);
+		query.setParameter("accountId", accountId);
+		try {
+			List<BankTransaction> transactions = (List<BankTransaction>) query.getResultList();
+			return transactions;
+		} catch (NoResultException e) {
+			return null;
+		} catch (Exception ee) {
+			return null;
+		}
+	}
+
 }

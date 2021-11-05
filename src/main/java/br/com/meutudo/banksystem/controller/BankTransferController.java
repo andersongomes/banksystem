@@ -178,5 +178,4 @@ public class BankTransferController {
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authentication!");
 	}
-
 }
