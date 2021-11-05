@@ -1,5 +1,3 @@
-https://img.shields.io/github/license/{username}/{repo-name}.svg https://img.shields.io/github/forks/{username}/{repo-name}.svg https://img.shields.io/github/stars/{username}/{repo-name}.svg https://img.shields.io/github/watchers/{username}/{repo-name}.svg 
-
 # Bank System
 Este projeto provém uma api para gerenciamento e execuções de ações bancárias
 
@@ -20,14 +18,14 @@ O projeto consiste em uma aplicação semelhante a um sistema bancário. O proje
 - Criar um arquivo de changelog para documentar as mudanças efetuadas.
 
 ## Tecnologias
-- Programming Language: JAVA https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white
-- Framework: SPRING BOOT 	https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white
+- Programming Language: JAVA
+- Framework: SPRING BOOT
 - SGBD: H2
-- IDE: Spring Tools https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white
+- IDE: Spring Tools
 
 ## Configurando o Projeto
 
-### Requisitos https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white
+### Requisitos
 
 ### SGBD
 - Utilizei um banco H2 configurado pelo próprio sistema para facilitar a execução do serviço.
@@ -36,7 +34,7 @@ O projeto consiste em uma aplicação semelhante a um sistema bancário. O proje
 ### JAVA
 - Seu sistema operacional deve ter instalado a versão do JAVA igual ou superior ao JAVA 11.
 
-### Preparando o Projeto no Windows https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white
+### Preparando o Projeto no Windows
 - É preciso criar as seguintes variáveis de ambiente no sistema:
 - - DB_USERNAME (Nome do usuário do banco de dados)
 - - DB_PASSWORD (Senha de acesso ao banco de dados do usuário definido na variável DB_USERNAME)
@@ -58,4 +56,4 @@ O projeto consiste em uma aplicação semelhante a um sistema bancário. O proje
 ![ER](https://user-images.githubusercontent.com/1368056/140454058-fe997224-36b6-4d7b-bbce-84c942042f10.png)
 
 ## Contato
-https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white E-mail: anderson.uece@gmail.com
+E-mail: anderson.uece@gmail.com
