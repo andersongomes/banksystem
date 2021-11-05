@@ -56,10 +56,152 @@ O projeto consiste em uma aplicação semelhante a um sistema bancário. O proje
 ``` http://localhost:8000/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config ```
 ![swagger](https://user-images.githubusercontent.com/1368056/140455693-523d52aa-7e24-46d8-b7a0-b5afe1d010ff.png)
 
+- Para os endpoints que precisam de autenticação deve ser enviado no header o token assim como no exemplo abaixo:
+![image](https://user-images.githubusercontent.com/1368056/140458564-3ad1c512-7089-4d3f-b112-eb29afc1bb92.png)
+
+
 ## Model
 
 ### ER diagram
 ![ER](https://user-images.githubusercontent.com/1368056/140454058-fe997224-36b6-4d7b-bbce-84c942042f10.png)
+
+### Consultas de Exemplo
+```
+=== USER ===
+SELECT * FROM USER;
+DELETE FROM USER WHERE ID = 4
+
+=== BANK ===
+SELECT * FROM BANK;
+
+=== ACCOUNT ===
+SELECT * FROM ACCOUNT;
+
+=== BANK_TRANSFER ===
+SELECT * FROM BANK_TRANSFER;
+
+=== BANK_TRANSACTION ===
+SELECT * FROM BANK_TRANSACTION;
+UPDATE BANK_TRANSACTION SET TRANSACTION_FACTOR = 1 WHERE ID = 10
+UPDATE BANK_TRANSACTION SET TRANSACTION_REVERSAL_DATE = NULL WHERE ID =43
+
+=== TOKEN ===
+SELECT * FROM TOKEN WHERE TOKEN = '1635911757642-965ed631-b4a3-4591-8383-d190876a9fff'
+UPDATE TOKEN SET EXPIRATION_DATE = '2021-11-06 00:55:57.643' WHERE TOKEN = '1635911757642-965ed631-b4a3-4591-8383-d190876a9fff'
+
+```
+
+### JSONs de exemplo de inserção nos endpoints
+```
+==== USER ====
+{
+    "name": "Anderson Gomes",
+    "login": "anderson.gomes",
+    "password": "123456",
+    "email": "anderson.uece@gmail.com",
+    "cpf": "04816804382",
+    "rg": "2005010303776",
+    "phone": "85988333287"
+},
+{
+    "name": "Ryvane Maria",
+    "login": "ryvane.maria",
+    "password": "123456",
+    "email": "ryvane@gmail.com",
+    "cpf": "60417518390",
+    "rg": "2005010303776",
+    "phone": "85986169299"
+}
+
+==== BANK =====
+{
+  "name": "Caixa Econômica Federal",
+  "bankCode": "001",
+  "phone": "(85)3332-9876"
+}
+
+==== ACCOUNT ====
+{
+  "user": {
+      "id": 1
+  },
+  "bank": {
+    "id": 3
+  },
+  "agency": "2568",
+  "accountNumber": "000787655-0",
+  "operation": "013"
+},
+{
+  "user": {
+      "id": 2
+  },
+  "bank": {
+    "id": 3
+    "id": 3
+  },
+  "agency": "2124",
+  "accountNumber": "0007876512-0",
+  "operation": "001"
+}
+
+==== BANK_TRANSFER =====
+
+{
+  "originAccount": {
+      "id": 5
+  },
+  "destinyAccount": {
+    "id": 6
+  },
+  "transferValue": "450.0"
+}
+
+==== BANK TRANSACTION =====
+{
+  "account": {
+      "id": 6
+  },
+  "transactionSchedulingDate": "2021-11-03T01:13:49.072Z",
+  "transactionDate": "2021-11-03T01:13:49.072Z",
+  "transactionFactor": -1,
+  "transactionValue": 200.0
+}
+
+==== AUTHENTICATE ======
+
+{
+    "login": "anderson.gomes",
+    "password": "123456"
+}
+
+==== DEPOSIT ====
+{
+    "transactionSchedulingDate": "2021-11-03T18:23:49.072Z",
+    "transactionDate": "2021-11-03T18:23:49.072Z",
+    "transactionValue": 150.0
+}
+
+==== WITHDRAW =====
+{
+    "transactionSchedulingDate": "2021-11-03T18:23:49.072Z",
+    "transactionDate": "2021-11-03T18:23:49.072Z",
+    "transactionValue": 100.0
+}
+
+=== BANK TRANSFER ===
+
+{
+  "originAccount": {
+      "id": 4
+  },
+  "destinyAccount": {
+    "id": 5
+  },
+  "transferValue": "450.0"
+}
+```
+
 
 ## Contato
 ![Badge](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white) 
