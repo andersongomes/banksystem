@@ -61,6 +61,7 @@ O projeto consiste em uma aplicação semelhante a um sistema bancário. O proje
 
 
 ## Model
+- Foi definido na modelagem que tanto os depósito de valores como as retiradas ficararão numa mesma tabela. O que muda é o fator onde para os depósitos o fato é 1 e para os saques o fator é -1. Asssim a consulta do saldo fica bem mais direta fazendo o somatório do valor multiplicato pelo fator da transação.
 
 ### ER diagram
 ![ER](https://user-images.githubusercontent.com/1368056/140454058-fe997224-36b6-4d7b-bbce-84c942042f10.png)
